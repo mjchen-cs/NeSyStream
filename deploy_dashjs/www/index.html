@@ -1,0 +1,68 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>NeSyStream dash.js deployment</title>
+<script src="dash.all.min.js"></script></head>
+<body style="margin:0;background:#000">
+<video id="v" muted autoplay playsinline style="width:640px;height:270px"></video>
+<script>
+const qs = new URLSearchParams(location.search);
+const METHOD = qs.get('method') || 'nesy', SID = qs.get('sid') || String(Date.now()), ABR = qs.get('abr') || 'http://127.0.0.1:8333';
+const log = {method: METHOD, sid: SID, t0: performance.now(), events: [], decisions: [], frags: [], done: false};
+window.__log = log;
+const now = () => (performance.now() - log.t0) / 1000;
+const video = document.getElementById('v');
+['loadstart', 'playing', 'waiting', 'stalled', 'ended', 'seeking', 'pause'].forEach(ev =>
+  video.addEventListener(ev, () => { log.events.push([ev, now(), video.currentTime]); if (ev === 'ended') log.done = true; }));
+
+let completed = 0, lastFrag = null;
+const cache = {};
+function NeSyRuleClass() {
+  const factory = dashjs.FactoryMaker, SwitchRequest = factory.getClassFactoryByName('SwitchRequest');
+  const context = this.context;
+  function getSwitchRequest(rulesContext) {
+    const sr = SwitchRequest(context).create();
+    if (rulesContext.getMediaType() !== 'video') return sr;
+    const reps = rulesContext.getAbrController().getPossibleVoRepresentationsFilteredBySettings(rulesContext.getMediaInfo(), true)
+      .slice().sort((a, b) => a.bandwidth - b.bandwidth);
+    const k = completed;
+    if (!(k in cache)) {
+      const buffer = player.getDashMetrics().getCurrentBufferLevel('video') || 0;
+      const x = new XMLHttpRequest();                       // synchronous call to the decision service
+      x.open('POST', ABR + '/decide', false); x.setRequestHeader('Content-Type', 'application/json');
+      const t = performance.now();
+      x.send(JSON.stringify({sid: SID, method: METHOD, k, buffer, last: lastFrag}));
+      const r = JSON.parse(x.responseText);
+      r.rtt_ms = performance.now() - t; r.t = now(); cache[k] = r.level; log.decisions.push(r);
+    }
+    sr.representation = reps[Math.min(cache[k], reps.length - 1)];
+    sr.priority = SwitchRequest.PRIORITY.STRONG; sr.reason = {rule: 'NeSy', k};
+    return sr;
+  }
+  return {getSwitchRequest};
+}
+NeSyRuleClass.__dashjs_factory_name = 'NeSyRule';
+const NeSyRule = dashjs.FactoryMaker.getClassFactory(NeSyRuleClass);
+
+const player = dashjs.MediaPlayer().create();
+const custom = METHOD !== 'dashjs';
+player.updateSettings({
+  debug: {logLevel: dashjs.Debug.LOG_LEVEL_WARNING},
+  streaming: {
+    buffer: {stableBufferTime: 60, bufferTimeAtTopQuality: 60, bufferTimeAtTopQualityLongForm: 60, fastSwitchEnabled: false},
+    abr: {autoSwitchBitrate: {video: true},
+          rules: custom ? {throughputRule: {active: false}, bolaRule: {active: false}, insufficientBufferRule: {active: false},
+                           switchHistoryRule: {active: false}, droppedFramesRule: {active: false}, abandonRequestsRule: {active: false},
+                           l2ARule: {active: false}, loLPRule: {active: false}} : {}}
+  }
+});
+if (custom) player.addABRCustomRule('qualitySwitchRules', 'NeSyRule', NeSyRule);
+player.on(dashjs.MediaPlayer.events.FRAGMENT_LOADING_COMPLETED, e => {
+  const r = e.request;
+  if (!r || r.mediaType !== 'video' || r.type !== 'MediaSegment') return;
+  const dur = (r.endDate - r.startDate) / 1000;
+  lastFrag = {bytes: r.bytesLoaded, dur_s: dur};
+  log.frags.push({index: r.index, bw: r.representation ? r.representation.bandwidth : null, bytes: r.bytesLoaded, dur_s: dur, t: now()});
+  completed += 1;
+});
+player.on(dashjs.MediaPlayer.events.ERROR, e => log.events.push(['error', now(), JSON.stringify(e.error || e).slice(0, 300)]));
+player.initialize(video, 'media/manifest.mpd', true);
+</script></body></html>

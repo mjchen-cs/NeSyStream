@@ -1,0 +1,5 @@
+torch>=2.1
+numpy>=1.24
+# optional
+opencv-python        # face statistics for the Salient concept
+itu-p1203            # ITU-T P.1203 teacher / independent evaluator (verify version & input format)
