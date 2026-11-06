@@ -1,0 +1,167 @@
+{
+ "BBA": {
+  "vmaf_mean": 59.18966009162721,
+  "rebuf_ratio": 0.014407352661273274,
+  "switch_mag": 9.028629069385074,
+  "mbytes": 7.206111532738095,
+  "violation_rate": 0.007678571428571429,
+  "latency_ms": 0.002788438185465537,
+  "p1203": 2.93090648418852,
+  "nsqoe_train_reward": -27.303910541921365,
+  "bytes_saving_vs_RobustMPC-bitrate": 7.264541257402001
+ },
+ "RB": {
+  "vmaf_mean": 61.895099782943724,
+  "rebuf_ratio": 0.03520457524237913,
+  "switch_mag": 6.10677104535557,
+  "mbytes": 6.816003216666667,
+  "violation_rate": 0.18045634920634923,
+  "latency_ms": 0.025607930539759793,
+  "p1203": 3.048049591639492,
+  "nsqoe_train_reward": -21.09733802331168,
+  "bytes_saving_vs_RobustMPC-bitrate": 12.284845687305857
+ },
+ "RobustMPC-bitrate": {
+  "vmaf_mean": 62.612632139523825,
+  "rebuf_ratio": 0.012198087901966812,
+  "switch_mag": 7.743363201476279,
+  "mbytes": 7.770610757142856,
+  "violation_rate": 0.0289484126984127,
+  "latency_ms": 161.93430839488715,
+  "p1203": 3.1080007812916697,
+  "nsqoe_train_reward": -18.3645522606293,
+  "bytes_saving_vs_RobustMPC-bitrate": 0.0
+ },
+ "RobustMPC-quality": {
+  "vmaf_mean": 63.04059612523942,
+  "rebuf_ratio": 0.012475159298932913,
+  "switch_mag": 7.559732639789582,
+  "mbytes": 7.771454379761905,
+  "violation_rate": 0.0394642857142857,
+  "latency_ms": 271.60918329756925,
+  "p1203": 3.128038927022657,
+  "nsqoe_train_reward": -17.908926348169224,
+  "bytes_saving_vs_RobustMPC-bitrate": -0.01085658058825878
+ },
+ "Ours-teacher-4step-best8": {
+  "vmaf_mean": 63.18579105082012,
+  "rebuf_ratio": 0.013947211349897253,
+  "switch_mag": 8.871131367910476,
+  "mbytes": 7.819320091666667,
+  "violation_rate": 0.0,
+  "latency_ms": 4.234309121495157,
+  "p1203": 3.082453011468729,
+  "nsqoe_train_reward": -18.251512457799013,
+  "bytes_saving_vs_RobustMPC-bitrate": -0.6268404897135982
+ },
+ "Ours-Qgreedy": {
+  "vmaf_mean": 63.024223756790164,
+  "rebuf_ratio": 0.01354425536697075,
+  "switch_mag": 8.842829950650533,
+  "mbytes": 7.789609321428571,
+  "violation_rate": 0.0,
+  "latency_ms": 0.6311770415096174,
+  "p1203": 3.075461744663459,
+  "nsqoe_train_reward": -18.53961751619742,
+  "bytes_saving_vs_RobustMPC-bitrate": -0.24449254864877812
+ },
+ "Ours-noguidance-best8": {
+  "vmaf_mean": 63.13246910231454,
+  "rebuf_ratio": 0.0139179552838181,
+  "switch_mag": 8.806474114032019,
+  "mbytes": 7.801274380952381,
+  "violation_rate": 0.0,
+  "latency_ms": 9.180793051482251,
+  "p1203": 3.0844754810651835,
+  "nsqoe_train_reward": -18.30115694342669,
+  "bytes_saving_vs_RobustMPC-bitrate": -0.3946102149221531
+ },
+ "Ours-student-1step-best8": {
+  "vmaf_mean": 63.12623349825541,
+  "rebuf_ratio": 0.013829810708021157,
+  "switch_mag": 8.912100791505404,
+  "mbytes": 7.807602421428571,
+  "violation_rate": 0.0,
+  "latency_ms": 1.379123801563678,
+  "p1203": 3.0808755583017553,
+  "nsqoe_train_reward": -18.41123173552166,
+  "bytes_saving_vs_RobustMPC-bitrate": -0.47604577608924004
+ },
+ "jade": {
+  "vmaf_mean": 66.90285226504008,
+  "rebuf_ratio": 0.15770725922807877,
+  "switch_mag": 7.912160000772703,
+  "mbytes": 9.032487979166667,
+  "violation_rate": 0.6333531746031746,
+  "latency_ms": 1.653232004247247,
+  "p1203": 2.2695678332101616,
+  "nsqoe_train_reward": -31.55890730855809,
+  "bytes_saving_vs_RobustMPC-bitrate": -16.239099621144646
+ },
+ "pensieve": {
+  "vmaf_mean": 41.859878973733814,
+  "rebuf_ratio": 0.07783748896396749,
+  "switch_mag": 11.457473700529054,
+  "mbytes": 3.9395126410714285,
+  "violation_rate": 0.08551587301587303,
+  "latency_ms": 1.6540926722657223,
+  "p1203": 1.9886367690142903,
+  "nsqoe_train_reward": -65.22550904835974,
+  "bytes_saving_vs_RobustMPC-bitrate": 49.302406667967865
+ },
+ "ppo_lag": {
+  "vmaf_mean": 58.2344122898011,
+  "rebuf_ratio": 0.13831842546000725,
+  "switch_mag": 8.787880512788183,
+  "mbytes": 6.492492576785714,
+  "violation_rate": 0.1738095238095238,
+  "latency_ms": 1.65372166266833,
+  "p1203": 2.4274551684813614,
+  "nsqoe_train_reward": -33.05024704814534,
+  "bytes_saving_vs_RobustMPC-bitrate": 16.448104535184417
+ },
+ "ppo_vmaf": {
+  "vmaf_mean": 57.02926012561435,
+  "rebuf_ratio": 0.06015796204928064,
+  "switch_mag": 8.222594145933787,
+  "mbytes": 5.198199807738096,
+  "violation_rate": 0.16490079365079363,
+  "latency_ms": 1.7020844385634908,
+  "p1203": 2.6260419923952587,
+  "nsqoe_train_reward": -35.36914714336661,
+  "bytes_saving_vs_RobustMPC-bitrate": 33.104359873387864
+ },
+ "DIPO-best8": {
+  "vmaf_mean": 67.11267150356656,
+  "rebuf_ratio": 0.14628487739473733,
+  "switch_mag": 7.491490362300759,
+  "mbytes": 8.751672618452382,
+  "violation_rate": 0.37255952380952384,
+  "latency_ms": 10.270088317858088,
+  "p1203": 2.774780848933472,
+  "nsqoe_train_reward": -14.928958339269904,
+  "bytes_saving_vs_RobustMPC-bitrate": -12.625286376720378
+ },
+ "QSM-best8": {
+  "vmaf_mean": 64.65062915824709,
+  "rebuf_ratio": 0.2401202787306217,
+  "switch_mag": 13.113132607936858,
+  "mbytes": 9.730579474404761,
+  "violation_rate": 0.2900595238095238,
+  "latency_ms": 10.270218714426774,
+  "p1203": 2.4034767474374013,
+  "nsqoe_train_reward": -29.003970365467968,
+  "bytes_saving_vs_RobustMPC-bitrate": -25.222839986680246
+ },
+ "Ours-nohard-best8": {
+  "vmaf_mean": 67.63948518548693,
+  "rebuf_ratio": 0.21542451364330545,
+  "switch_mag": 8.017914832206,
+  "mbytes": 9.597111896428572,
+  "violation_rate": 0.5089087301587302,
+  "latency_ms": 21.328730531672516,
+  "p1203": 2.5186197039333105,
+  "nsqoe_train_reward": -15.753837130589611,
+  "bytes_saving_vs_RobustMPC-bitrate": -23.50524555108837
+ }
+}

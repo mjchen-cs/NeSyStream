@@ -1,0 +1,22 @@
+{
+ "Ours-teacher-4step": {
+  "vmaf_mean": 63.5832244066965,
+  "rebuf_ratio": 0.012870936299925296,
+  "switch_mag": 9.37007339511599,
+  "mbytes": 8.509020674404763,
+  "violation_rate": 0.0,
+  "latency_ms": 2.2136837797306868,
+  "p1203": 3.081016915411538,
+  "nsqoe_train_reward": -17.43804475113949
+ },
+ "Ours-student-1step": {
+  "vmaf_mean": 62.78537965502058,
+  "rebuf_ratio": 0.012719927752707173,
+  "switch_mag": 10.765167623190653,
+  "mbytes": 8.443350049404762,
+  "violation_rate": 0.0,
+  "latency_ms": 0.36984617292228716,
+  "p1203": 3.029889350856707,
+  "nsqoe_train_reward": -20.647485226396626
+ }
+}

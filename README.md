@@ -31,6 +31,13 @@ The dash.js deployment additionally needs Node.js and Playwright (`npm i playwri
 
 A synthetic dataset for a quick end-to-end check (numbers are meaningless) is produced by `scripts/smoke_test.sh`.
 
+## Pretrained models and data
+
+`assets/` contains the per-chunk descriptors of all 114 sources, the trained checkpoints of NeSyStream's learned
+components and of all learned baselines (3 seeds), the conformal calibration, the NS-QoE weights, and the results
+and per-session logs of every evaluation in the paper. See [`assets/README.md`](assets/README.md) for the contents
+and a one-command reproduction of the end-to-end table.
+
 ## Pipeline
 
 ```bash

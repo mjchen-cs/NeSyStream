@@ -1,0 +1,22 @@
+{
+ "Ours-plan1-all": {
+  "vmaf_mean": 89.59392934989415,
+  "rebuf_ratio": 0.009344967796340078,
+  "switch_mag": 4.181479443035357,
+  "mbytes": 101.34589328908355,
+  "violation_rate": 0.0,
+  "latency_ms": 0.6874084776507562,
+  "p1203": 4.307777173846488,
+  "nsqoe_train_reward": 76.28095978739448
+ },
+ "Ours-plan3-all": {
+  "vmaf_mean": 89.18914183130804,
+  "rebuf_ratio": 0.008016304708856472,
+  "switch_mag": 4.11873696876986,
+  "mbytes": 97.7549038092992,
+  "violation_rate": 0.0,
+  "latency_ms": 2.3855169430564,
+  "p1203": 4.2996805077968085,
+  "nsqoe_train_reward": 74.4144542647822
+ }
+}

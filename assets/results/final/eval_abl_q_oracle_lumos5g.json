@@ -1,0 +1,12 @@
+{
+ "Ours-student-1step-best8": {
+  "vmaf_mean": 90.75524946529433,
+  "rebuf_ratio": 0.0014192732023969397,
+  "switch_mag": 3.72734724969017,
+  "mbytes": 110.04685420945945,
+  "violation_rate": 0.0,
+  "latency_ms": 1.356831888312101,
+  "p1203": 4.396789201991944,
+  "nsqoe_train_reward": 82.17538642883301
+ }
+}
