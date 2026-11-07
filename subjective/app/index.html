@@ -1,0 +1,85 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><title>视频观看体验评测</title>
+<style>
+html,body{margin:0;height:100%;background:#808080;color:#fff;font-family:"Microsoft YaHei",sans-serif}
+.scr{display:none;position:fixed;inset:0;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+.on{display:flex}
+#vid{width:100vw;height:100vh;background:#000;object-fit:contain}
+button{font-size:22px;padding:12px 28px;margin:8px;border:0;border-radius:6px;cursor:pointer;background:#2b2b2b;color:#fff}
+button:hover{background:#4a4a4a}
+.rate button{display:block;width:420px;font-size:26px;text-align:left}
+select,input{font-size:20px;padding:6px;margin:6px}
+label{display:block;margin:6px;font-size:20px}
+h1{font-weight:normal;font-size:30px} p{font-size:20px;max-width:900px;line-height:1.6}
+#prog{position:fixed;bottom:10px;right:16px;font-size:14px;color:#ddd}
+</style></head><body>
+<div id="s_info" class="scr on">
+ <h1>视频观看体验评测（由实验人员填写）</h1>
+ <label>受试者编号 <input id="sid" placeholder="S01" size="6"></label>
+ <label>年龄段 <select id="age"><option>18-22</option><option>23-29</option><option>30-39</option><option>40+</option></select></label>
+ <label>性别 <select id="gender"><option>男</option><option>女</option><option>不愿透露</option></select></label>
+ <label>观看网络视频频率 <select id="freq"><option>每天</option><option>每周数次</option><option>每周一次或更少</option></select></label>
+ <label>视力 <select id="vision"><option>正常</option><option>矫正后正常</option></select></label>
+ <button onclick="start()">开始（进入全屏）</button><div id="msg"></div>
+</div>
+<div id="s_text" class="scr"><h1 id="t_h"></h1><p id="t_p"></p><button id="t_b"></button></div>
+<div id="s_play" class="scr" style="background:#000"><video id="vid" playsinline></video></div>
+<div id="s_rate" class="scr rate">
+ <h1>请评价刚才这段视频的<b>整体观看体验</b>（包括清晰度、卡顿、画质变化）</h1>
+ <button onclick="rate(5)">5　优　Excellent</button><button onclick="rate(4)">4　良　Good</button>
+ <button onclick="rate(3)">3　中　Fair</button><button onclick="rate(2)">2　差　Poor</button>
+ <button onclick="rate(1)">1　劣　Bad</button>
+</div>
+<div id="prog"></div>
+<script>
+let PL=[], order=[], i=0, info={}, t0=0, played=0, done=[];
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));$(id).classList.add('on')}
+function text(h,p,b,fn){$('t_h').textContent=h;$('t_p').innerHTML=p;$('t_b').textContent=b;$('t_b').onclick=fn;show('s_text')}
+function rnd(seed){return()=>{seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296}}
+function shuffle(a,r){for(let k=a.length-1;k>0;k--){const j=Math.floor(r()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function makeOrder(sub){
+  const test=PL.filter(x=>x.phase=='test'), r=rnd(1000+parseInt(sub.replace(/\D/g,'')||'0'));
+  for(let t=0;t<2000;t++){const o=shuffle(test.slice(),r);
+    if(o.every((x,k)=>k==0||x.trace!=o[k-1].trace)) return o}   // no two consecutive clips from the same trace
+  return shuffle(test.slice(),r)}
+async function start(){
+  info={subject:$('sid').value.trim().toUpperCase(),age_group:$('age').value,gender:$('gender').value,viewing_freq:$('freq').value,vision:$('vision').value};
+  if(!/^S\d+$/.test(info.subject)){$('msg').textContent='请输入编号，如 S01';return}
+  const used=await (await fetch('/subjects')).json();
+  if(used.includes(info.subject)){$('msg').textContent='编号 '+info.subject+' 已经用过，请换一个新编号';return}
+  PL=await (await fetch('/stimuli/playlist.json')).json();
+  order=[...PL.filter(x=>x.phase=='train'),...makeOrder(info.subject)];
+  try{await document.documentElement.requestFullscreen()}catch(e){}
+  text('欢迎参加','接下来您将观看若干段约1分钟的视频。每段结束后，请根据您的<b>整体观看体验</b>打分（1–5分），包括清晰度、是否卡顿、画质是否频繁变化。没有对错之分，请凭第一感觉评价。<br>先进行2段练习。','开始练习',next);
+}
+async function next(){
+  if(i==order.length){finish();return}
+  const n_train=order.filter(x=>x.phase=='train').length;
+  if(i==n_train&&!order._started){order._started=1;text('练习结束','下面开始正式评测，共'+(order.length-n_train)+'段。','开始',next);return}
+  if(i==n_train+Math.floor((order.length-n_train)/2)&&!order._break){order._break=1;text('休息一下','请休息至少3分钟，准备好后点击继续。','继续',next);return}
+  const s=order[i]; $('prog').textContent=(s.phase=='train'?'练习 ':'')+(i+1)+' / '+order.length;
+  text('请稍候','正在载入视频…','',()=>{}); $('t_b').style.display='none';
+  const blob=await (await fetch('/stimuli/'+s.file+'.mp4')).blob();   // fully preloaded: no playback stall is added by the app
+  $('t_b').style.display=''; const v=$('vid'); v.src=URL.createObjectURL(blob); v.controls=false;
+  show('s_play'); played=0; v.playbackRate=1; let lastT=0, tStart=performance.now();
+  v.onratechange=()=>{if(v.playbackRate!==1)v.playbackRate=1};                       // normal speed only
+  v.ontimeupdate=()=>{if(!v.seeking)lastT=v.currentTime};
+  v.onseeking=()=>{if(Math.abs(v.currentTime-lastT)>0.5)v.currentTime=lastT};          // no skipping
+  v.onended=()=>{played=v.currentTime; order[i]._watch=(performance.now()-tStart)/1000;
+                 URL.revokeObjectURL(v.src);show('s_rate');t0=performance.now()};
+  await v.play();
+}
+function rate(r){
+  if(done.length && done[done.length-1].trial===i+1) done.pop();   // retry of the same trial
+  const s=order[i], w=s._watch||0, row={...info,phase:s.phase,trial:i+1,file:s.file,rating:r,rt_s:((performance.now()-t0)/1000).toFixed(2),played_s:played.toFixed(1),watch_s:w.toFixed(1),complete:(played>50&&w>=0.95*played)?1:0};
+  done.push(row);
+  fetch('/rating',{method:'POST',body:JSON.stringify(row)}).then(r=>{if(!r.ok)throw 0; i++; setTimeout(next,600)})
+    .catch(()=>text('数据保存失败','请叫实验人员：关闭 Excel 中打开的数据文件后，点击“重试保存”。','重试保存',()=>rate(r)));
+}
+function finish(){
+  fetch('/session',{method:'POST',body:JSON.stringify({...info,trials:done,finished:new Date().toISOString()})});
+  try{document.exitFullscreen()}catch(e){}
+  text('评测结束','感谢您的参与！请告知实验人员。','',()=>{}); $('t_b').style.display='none';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')e.preventDefault()});
+</script></body></html>
